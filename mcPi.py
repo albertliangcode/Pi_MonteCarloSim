@@ -92,10 +92,7 @@ def main():
 	    count_total += 1
 	    if( circle.pointIsInCircle(point) ):
 		count_cir += 1
-	approx =  (count_cir/count_total)
-	print approx
-	approx *= 4
-	print approx
+	approx = (count_cir/count_total) * 4
 	error = approx - pi
 	print 'Approximation: %s' % ( str(approx) )
 	print 'Error: %s' % ( str(error) )
