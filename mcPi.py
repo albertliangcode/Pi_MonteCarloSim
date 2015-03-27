@@ -29,7 +29,7 @@ class Square(object):
 	self.max_y = self.c_y + 0.5*side
 	self.min_y = self.c_y - 0.5*side
     def getRandomPoint(self):
-	point = []
+	point = [0,0]
 	point[0] = randint(self.min_x,self.max_x)
 	point[1] = randint(self.min_y,self.max_y)
 	return point
@@ -73,7 +73,9 @@ def main():
 	if( numIter.lower() == 'q' ):
 	    break
 	elif( not( StringRepInt(numIter) )  or int(numIter) <= 0 ):
-	    print 'Please enter an integer greater than 0.' 
+	    print 'Please enter an integer greater than 0.'
+	    continue 
+	numIter = int(numIter)
 
 	# Intialize Square and Circle	
 	center = [0,0]
@@ -82,17 +84,24 @@ def main():
 	circle = Circle(radius,center)
 
 	# Initialize Counts
-	count_cir = 0
-	count_total = 0
+	count_cir = 0.00
+	count_total = 0.00
 
 	for i in range(numIter):
-	    point = square.getRandomPoint()
+	    point = square.getRandomPoint() 
 	    count_total += 1
-	    if( circle.pointIsInCrcle(point) ):
+	    if( circle.pointIsInCircle(point) ):
 		count_cir += 1
-	approx = (count_cir/count_total)*4
-	error = pi - approx
+	approx =  (count_cir/count_total)
+	print approx
+	approx *= 4
+	print approx
+	error = approx - pi
 	print 'Approximation: %s' % ( str(approx) )
 	print 'Error: %s' % ( str(error) )
     print 'Exiting...\n\n'
+
+
+# Run ==========================================================================================================
+main()
 
