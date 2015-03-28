@@ -63,12 +63,14 @@ def StringRepInt(s):
     except ValueError:
         return False
 
-def initFiles():
+def initFiles(numTrial,numIter):
     with open('mcPi_Data.dat','w+') as w:
 	pass
     with open('mcPi_Report.txt','w+') as w:
 	w.write('Report: Monte Carlo Approximation of Pi\n\n\n')
-	w.write('Trial\t\tApprox\t\t\t\tError\t\t\t\t\n')
+	w.write('Number of Trials: ' + str(numTrial))
+	w.write('\nSamples per Trial: ' + str(numIter))
+	w.write('\n\nTrial\t\tApprox\t\t\t\tError\t\t\t\t\n')
 	w.write('=======\t\t======\t\t\t\t======\t\t\t\t\n')
 
 def runTrial(numIter):
@@ -124,6 +126,12 @@ def runStatistics():
 	w.write( '\nMean:\t\t' + str(mean) )
 	w.write( '\nStd Deviation:\t' + str(std) )
 	w.write( '\nRelative Err:\t' + str(rel_error) )
+
+def getExpectedRelError(N):
+    expectedRE = pow( (4/pi - 1)/N ,0.5 )
+    print 'ExRE: ',expectedRE
+    with open('mcPi_Report.txt','a') as w:
+	w.write( '\nExpctd ReErr:\t' + str(expectedRE) )
 	w.write( '\n' )
 
 
@@ -146,18 +154,21 @@ def main():
 	    print 'Please enter an integer greater than 0.'
 	    continue 
 	numTrial = int(numTrial)
-	print( 'Running...' )	
 
-	initFiles()
+	initFiles(numTrial,numIter)
+	print( 'Initialized Readout Files...' )
 	
+	print( 'Running Trials...' )	
 	for i in range(numTrial):
 	    with open('mcPi_Report.txt','a') as w:
 		w.write( str(i+1) + '\t\t' )
 	    runTrial(numIter)
 
+	print( 'Crunching Stats...' )
 	runStatistics()
+	getExpectedRelError(numIter)
     
-    print 'Exiting...\n\n'
+    print '\nExiting...\n\n'
 
 
 # Run ==========================================================================================================
