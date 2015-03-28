@@ -79,7 +79,7 @@ def main():
 
 	# Intialize Square and Circle	
 	center = [0,0]
-	radius = 100
+	radius = 1000000000000
 	square = Square(2*radius,center)
 	circle = Circle(radius,center)
 
