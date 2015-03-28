@@ -8,7 +8,7 @@ Albert Liang
 Uses a Monte Carlo method to approximate Pi.  User can control accuracy by determining the number of random samples.
 This program builds on top of mcPi.py, by taking many trial runs and determining the standard deviation and error of the sum of the results.  This should make it easier to test the strength of the program.
 
-This method uses a circle inscribed in a square.  The ratio of the area inside the circle to the area of everthing inside the square is PI/4.  Because of this, we can repeatedly sample random points within the square, determining if each point is also inside the circle.  The number of points inside the circle divided the number of points overall will give us a rough value for PI/4. 
+Just for lulz, the data from each trial won't be saved to a list to be processed. Instead, the data will be written to an external file. Another function will later read from that file and then run the statistics. Yes, it would be easier just to use a list, but where's the fun in that?
 
 NOTES:
 # All points on or contained within the border of the circle are considered "in the circle".
@@ -63,6 +63,14 @@ def StringRepInt(s):
     except ValueError:
         return False
 
+def initFiles():
+    with open('mcPi_Data.dat','w+') as w:
+	pass
+    with open('mcPi_Report.txt','w+') as w:
+	w.write('Report: Monte Carlo Approximation of Pi\n\n\n')
+	w.write('Trial\t\tApprox\t\t\t\tError\t\t\t\t\n')
+	w.write('=======\t\t======\t\t\t\t======\t\t\t\t\n')
+
 def runTrial(numIter):
     # Intialize Square and Circle	
     center = [0,0]
@@ -81,9 +89,42 @@ def runTrial(numIter):
     	    count_cir += 1
     approx = (count_cir/count_total) * 4
     error = approx - pi
-    s_approx =  'Approximation: %s' % ( str(approx) )
-    s_error =  'Error: %s' % ( str(error) )
-    print s_approx
+    s_approx = str(approx)
+    s_error = str(error)
+    with open('mcPi_Data.dat','a') as w:
+	w.write( s_approx + '\n' )
+    with open('mcPi_Report.txt','a') as w:
+	w.write( s_approx + '\t\t\t\t' + s_error + '\t\t\t\t\n' )
+    #print s_approx
+
+
+def runStatistics():
+    sum = 0.00
+    square_sum = 0.00
+    count = 0.00
+    with open('mcPi_Data.dat','r') as data:
+	while(True):
+	    s = data.readline()
+	    if( s == '' ):
+		break
+	    count += 1
+	    sum += float(s)
+	    error = float(s) - pi
+	    square_sum += pow(error,2)
+    variance = square_sum/count
+    std = pow(variance,0.5)
+    mean = sum/count
+    rel_error = std/mean
+    print 'Mean: ',mean
+    print 'STD:  ',std
+    print 'RErr: ',rel_error
+    with open('mcPi_Report.txt','a') as w:
+	w.write( '\n\nResults\n' )
+	w.write( '================' )
+	w.write( '\nMean:\t\t' + str(mean) )
+	w.write( '\nStd Deviation:\t' + str(std) )
+	w.write( '\nRelative Err:\t' + str(rel_error) )
+	w.write( '\n' )
 
 
 # Main =========================================================================================================
@@ -105,9 +146,16 @@ def main():
 	    print 'Please enter an integer greater than 0.'
 	    continue 
 	numTrial = int(numTrial)
+	print( 'Running...' )	
+
+	initFiles()
 	
 	for i in range(numTrial):
+	    with open('mcPi_Report.txt','a') as w:
+		w.write( str(i+1) + '\t\t' )
 	    runTrial(numIter)
+
+	runStatistics()
     
     print 'Exiting...\n\n'
 
